@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">EventProgressBar</string>
+    <string name="fail_init_device">初始化失败，请联系管理员</string>
+    <string name="in_wait">等待...</string>
+
+    <string name="clear_error_data">%   清除错误数据</string>
+    <string name="init_common_service">% 初始化通用业务</string>
+    <string name="init_audio_service">% 初始化语音业务</string>
+    <string name="init_video_service">% 初始化视频业务</string>
+    <string name="init_admin">%   初始化操作员</string>
+    <string name="init_contact">%   初始化联系人</string>
+    <string name="init_call_record">% 初始化通话记录</string>
+    <string name="init_system_setting">% 初始化系统配置</string>
+    <string name="init_external_device">% 初始化外部设备</string>
+    <string name="init_config_service">% 初始化配置业务</string>
+    <string name="init_camera">%   初始化摄像头</string>
+    <string name="init_success">初始化完成</string>
+    <string name="reload">重新加载</string>
+</resources>
