@@ -181,6 +181,7 @@ public class EventProgressBar extends LinearLayout
 
     private class InitServiceTask extends AsyncTask<Void, Integer, Integer>
     {
+        // 进度条滑动轨迹总长相对于进度条本身的倍数
         float eventUnitLength;
 
         @Override
@@ -188,8 +189,7 @@ public class EventProgressBar extends LinearLayout
         {
             progressBarLayout.setVisibility(View.VISIBLE);
             eventUnitLength = Float.valueOf(numberFormat.format((double) mContext.getResources().getDimension(R.dimen.progress_bg_length) / mContext
-                    .getResources
-                    ().getDimension(R.dimen.progress_item_length)));
+                    .getResources().getDimension(R.dimen.progress_item_length))) - 1;
             // 获取平均每个事件，进度条走的距离：相对自身的比例
             stepOffset = eventUnitLength / events.size();
             if (callback != null)

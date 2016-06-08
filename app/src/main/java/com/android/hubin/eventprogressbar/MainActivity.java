@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     SystemClock.sleep(1500);
                 }
-            }).addEvent(new ProgressEvent(getString(R.string.init_audio_service))
+            })/*.addEvent(new ProgressEvent(getString(R.string.init_audio_service))
             {
                 @Override
                 public void doEvent()
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     SystemClock.sleep(500);
                 }
-            });
+            })*/;
         }
     }
 }
