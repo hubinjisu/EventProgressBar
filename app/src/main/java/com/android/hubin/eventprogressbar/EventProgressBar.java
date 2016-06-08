@@ -29,11 +29,9 @@ public class EventProgressBar extends LinearLayout
     public final static int METHOD_SUCCESS = 0;
     /** 方法执行失败 */
     public final static int METHOD_FAILED = -1;
-    private static final String TAG = "EventProgressBar";
-    private static final int PROGRESS_MAX = 100;
+
     private long progressIntervalTime = 10;
     private ArrayList<ProgressEvent> events;
-    private NumberFormat numberFormat;
     private Context mContext;
     private LinearLayout progressLayout;
     private RelativeLayout progressBarLayout;
@@ -41,7 +39,6 @@ public class EventProgressBar extends LinearLayout
     private ImageView mSplashLoadingIV;
     private InitServiceTask initServiceTask;
     private EventProgressBarCallback callback;
-    private float stepOffset;
 
     public EventProgressBar(Context context)
     {
@@ -53,9 +50,6 @@ public class EventProgressBar extends LinearLayout
     private void initView(Context context)
     {
         events = new ArrayList<ProgressEvent>();
-        numberFormat = NumberFormat.getNumberInstance();
-        numberFormat.setMaximumFractionDigits(2);
-
         if (progressLayout == null)
         {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -154,16 +148,6 @@ public class EventProgressBar extends LinearLayout
         }
     }
 
-    private void initAnimation(float start, float end)
-    {
-        TranslateAnimation loadingAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, start, Animation.RELATIVE_TO_SELF, end,
-                Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0);
-        loadingAnimation.setDuration(PROGRESS_MAX * progressIntervalTime / events.size());
-        loadingAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
-        loadingAnimation.setFillAfter(true);
-        mSplashLoadingIV.startAnimation(loadingAnimation);
-    }
-
     public interface EventProgressBarCallback
     {
         /**
@@ -182,12 +166,18 @@ public class EventProgressBar extends LinearLayout
     private class InitServiceTask extends AsyncTask<Void, Integer, Integer>
     {
         // 进度条滑动轨迹总长相对于进度条本身的倍数
-        float eventUnitLength;
+        private float eventUnitLength;
+        // 单位事件在进度条上的滑动距离相当于本身的
+        private float stepOffset;
+        private NumberFormat numberFormat;
+        private static final int PROGRESS_MAX = 100;
 
         @Override
         protected void onPreExecute()
         {
             progressBarLayout.setVisibility(View.VISIBLE);
+            numberFormat = NumberFormat.getNumberInstance();
+            numberFormat.setMaximumFractionDigits(2);
             eventUnitLength = Float.valueOf(numberFormat.format((double) mContext.getResources().getDimension(R.dimen.progress_bg_length) / mContext
                     .getResources().getDimension(R.dimen.progress_item_length))) - 1;
             // 获取平均每个事件，进度条走的距离：相对自身的比例
@@ -286,5 +276,16 @@ public class EventProgressBar extends LinearLayout
             {
             }
         }
+
+        private void initAnimation(float start, float end)
+        {
+            TranslateAnimation loadingAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, start, Animation.RELATIVE_TO_SELF, end,
+                    Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0);
+            loadingAnimation.setDuration(PROGRESS_MAX * progressIntervalTime / events.size());
+            loadingAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+            loadingAnimation.setFillAfter(true);
+            mSplashLoadingIV.startAnimation(loadingAnimation);
+        }
+
     }
 }
