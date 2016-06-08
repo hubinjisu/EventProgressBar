@@ -25,11 +25,11 @@ import java.util.ArrayList;
  */
 public class EventProgressBar extends LinearLayout
 {
-    private static final String TAG = "EventProgressBar";
     /** 方法执行成功 */
     public final static int METHOD_SUCCESS = 0;
     /** 方法执行失败 */
     public final static int METHOD_FAILED = -1;
+    private static final String TAG = "EventProgressBar";
     private static final int PROGRESS_MAX = 100;
     private long progressIntervalTime = 10;
     private ArrayList<ProgressEvent> events;
@@ -39,7 +39,6 @@ public class EventProgressBar extends LinearLayout
     private RelativeLayout progressBarLayout;
     private TextView progressContent;
     private ImageView mSplashLoadingIV;
-    private ImageView mSplashLoadingBgIV;
     private InitServiceTask initServiceTask;
     private EventProgressBarCallback callback;
     private float stepOffset;
@@ -65,7 +64,6 @@ public class EventProgressBar extends LinearLayout
         progressContent = (TextView) progressLayout.findViewById(R.id.progress_content);
         progressBarLayout = (RelativeLayout) progressLayout.findViewById(R.id.loading_layout);
         mSplashLoadingIV = (ImageView) progressLayout.findViewById(R.id.splash_loading_item);
-        mSplashLoadingBgIV = (ImageView) progressLayout.findViewById(R.id.splash_loading_bg);
     }
 
     public EventProgressBar(Context context, AttributeSet attrs)
@@ -83,18 +81,8 @@ public class EventProgressBar extends LinearLayout
     }
 
     /**
-     * 添加进度回调
-     * @param callback
-     * @return
-     */
-    public EventProgressBar setCallback(EventProgressBarCallback callback)
-    {
-        this.callback = callback;
-        return this;
-    }
-
-    /**
      * 添加进度事件
+     *
      * @param event
      * @return
      */
@@ -108,14 +96,40 @@ public class EventProgressBar extends LinearLayout
     }
 
     /**
+     * 添加进度回调
+     *
+     * @param callback
+     * @return
+     */
+    public EventProgressBar setCallback(EventProgressBarCallback callback)
+    {
+        this.callback = callback;
+        return this;
+    }
+
+    /**
      * 每单位进度运行时间，单位：ms
+     *
      * @param intervalTime
      * @return
      */
-    public EventProgressBar setProgressIntervalTime(long intervalTime)
+    public EventProgressBar setProgressUnitTime(long intervalTime)
     {
         this.progressIntervalTime = intervalTime;
         return this;
+    }
+
+    /**
+     * 重新进行事件加载
+     */
+    public void restartEventTask()
+    {
+        if (initServiceTask != null)
+        {
+            initServiceTask.cancel(true);
+        }
+        initServiceTask = new InitServiceTask();
+        initServiceTask.execute();
     }
 
     @Override
@@ -140,24 +154,11 @@ public class EventProgressBar extends LinearLayout
         }
     }
 
-    /**
-     * 重新进行事件加载
-     */
-    public void restartEventTask()
-    {
-        if (initServiceTask != null)
-        {
-            initServiceTask.cancel(true);
-        }
-        initServiceTask = new InitServiceTask();
-        initServiceTask.execute();
-    }
-
     private void initAnimation(float start, float end)
     {
         TranslateAnimation loadingAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, start, Animation.RELATIVE_TO_SELF, end,
                 Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0);
-        loadingAnimation.setDuration(events.size() * progressIntervalTime);
+        loadingAnimation.setDuration(PROGRESS_MAX * progressIntervalTime / events.size());
         loadingAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
         loadingAnimation.setFillAfter(true);
         mSplashLoadingIV.startAnimation(loadingAnimation);
@@ -180,13 +181,17 @@ public class EventProgressBar extends LinearLayout
 
     private class InitServiceTask extends AsyncTask<Void, Integer, Integer>
     {
+        float eventUnitLength;
+
         @Override
         protected void onPreExecute()
         {
             progressBarLayout.setVisibility(View.VISIBLE);
+            eventUnitLength = Float.valueOf(numberFormat.format((double) mContext.getResources().getDimension(R.dimen.progress_bg_length) / mContext
+                    .getResources
+                    ().getDimension(R.dimen.progress_item_length)));
             // 获取平均每个事件，进度条走的距离：相对自身的比例
-            stepOffset = Float.valueOf(numberFormat.format((double) mContext.getResources().getDimension(R.dimen.progress_bg_length) / (mContext.getResources
-                    ().getDimension(R.dimen.progress_item_length) * events.size())));
+            stepOffset = eventUnitLength / events.size();
             if (callback != null)
             {
                 callback.onProgressStarted();
@@ -220,6 +225,7 @@ public class EventProgressBar extends LinearLayout
                 }
                 if (progress == PROGRESS_MAX)
                 {
+//                    publishProgress(progress, eventSize - 1);
                     SystemClock.sleep(progressIntervalTime * 10);
                 }
             }
@@ -238,18 +244,21 @@ public class EventProgressBar extends LinearLayout
                 return;
             }
             startProgressAnimation(values[0]);
-            progressContent.setText(values[0] + events.get(values[1]).getName());
+            progressContent.setText((values[0] + 1) + events.get(values[1]).getName());
         }
 
         private void startProgressAnimation(int progress)
         {
             int eventSize = events.size();
-            if (progress != 0 && progress % eventSize == 0)
+            if (progress % (PROGRESS_MAX / eventSize) == 0)
             {
                 // 获取单个事件运行的起始点
-                float start = Float.valueOf(numberFormat.format((double) stepOffset * progress / eventSize));
-                float end = Float.valueOf(numberFormat.format(start + stepOffset));
-                initAnimation(start, end);
+                float start = Float.valueOf(numberFormat.format((double) stepOffset * progress / (PROGRESS_MAX / eventSize)));
+                if (start < eventUnitLength)
+                {
+                    float end = Float.valueOf(numberFormat.format(start + stepOffset));
+                    initAnimation(start, end);
+                }
             }
         }
 

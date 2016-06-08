@@ -19,4 +19,11 @@
         android:gravity="center"
         android:orientation="vertical">
     </com.android.hubin.eventprogressbar.EventProgressBar>
+
+    <Button
+        android:id="@+id/reload"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="reload"/>
 </RelativeLayout>

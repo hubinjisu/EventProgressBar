@@ -3,6 +3,7 @@ package com.android.hubin.eventprogressbar;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -14,6 +15,14 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         progressLayout = (EventProgressBar) findViewById(R.id.progressBar_layout);
+        findViewById(R.id.reload).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                progressLayout.restartEventTask();
+            }
+        });
         initTaskEvents();
     }
 
@@ -21,7 +30,7 @@ public class MainActivity extends AppCompatActivity
     {
         if (progressLayout != null)
         {
-            progressLayout.setCallback(new EventProgressBar.EventProgressBarCallback()
+            progressLayout.setProgressUnitTime(50).setCallback(new EventProgressBar.EventProgressBarCallback()
             {
                 @Override
                 public void onProgressStarted()
@@ -44,14 +53,14 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void doEvent()
                 {
-                    SystemClock.sleep(500);
+                    SystemClock.sleep(1500);
                 }
             }).addEvent(new ProgressEvent(getString(R.string.init_audio_service))
             {
                 @Override
                 public void doEvent()
                 {
-                    SystemClock.sleep(1500);
+                    SystemClock.sleep(500);
                 }
             }).addEvent(new ProgressEvent(getString(R.string.init_video_service))
             {
@@ -60,7 +69,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     SystemClock.sleep(500);
                 }
-            }).addEvent(new ProgressEvent(getString(R.string.init_admin))
+            })/*.addEvent(new ProgressEvent(getString(R.string.init_admin))
             {
                 @Override
                 public void doEvent()
@@ -109,7 +118,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     SystemClock.sleep(500);
                 }
-            });
+            })*/;
         }
     }
 }
