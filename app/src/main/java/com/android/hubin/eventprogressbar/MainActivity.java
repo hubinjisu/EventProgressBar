@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     SystemClock.sleep(500);
                 }
-            })/*.addEvent(new ProgressEvent(getString(R.string.init_admin))
+            }).addEvent(new ProgressEvent(getString(R.string.init_admin))
             {
                 @Override
                 public void doEvent()
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     SystemClock.sleep(500);
                 }
-            })*/;
+            });
         }
     }
 }
