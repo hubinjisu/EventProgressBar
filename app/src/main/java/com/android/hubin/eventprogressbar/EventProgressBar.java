@@ -122,12 +122,7 @@ public class EventProgressBar extends LinearLayout
     protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (initServiceTask != null)
-        {
-            initServiceTask.cancel(true);
-        }
-        initServiceTask = new InitServiceTask();
-        initServiceTask.execute();
+        startEventTask();
     }
 
     @Override
@@ -143,7 +138,7 @@ public class EventProgressBar extends LinearLayout
     /**
      * 重新进行事件加载
      */
-    public void restartEventTask()
+    public void startEventTask()
     {
         if (initServiceTask != null)
         {
