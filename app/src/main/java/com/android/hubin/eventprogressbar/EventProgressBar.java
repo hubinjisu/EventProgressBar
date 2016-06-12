@@ -113,29 +113,11 @@ public class EventProgressBar extends LinearLayout
         return this;
     }
 
-    /**
-     * 重新进行事件加载
-     */
-    public void restartEventTask()
-    {
-        if (initServiceTask != null)
-        {
-            initServiceTask.cancel(true);
-        }
-        initServiceTask = new InitServiceTask();
-        initServiceTask.execute();
-    }
-
     @Override
     protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (initServiceTask != null)
-        {
-            initServiceTask.cancel(true);
-        }
-        initServiceTask = new InitServiceTask();
-        initServiceTask.execute();
+        startEventTask();
     }
 
     @Override
@@ -146,6 +128,29 @@ public class EventProgressBar extends LinearLayout
         {
             initServiceTask.cancel(true);
         }
+    }
+
+    /**
+     * 重新进行事件加载
+     */
+    public void startEventTask()
+    {
+        if (initServiceTask != null)
+        {
+            initServiceTask.cancel(true);
+        }
+        initServiceTask = new InitServiceTask();
+        initServiceTask.execute();
+    }
+
+    private void initAnimation(float start, float end)
+    {
+        TranslateAnimation loadingAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, start, Animation.RELATIVE_TO_SELF, end,
+                Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0);
+        loadingAnimation.setDuration(events.size() * progressIntervalTime);
+        loadingAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        loadingAnimation.setFillAfter(true);
+        mSplashLoadingIV.startAnimation(loadingAnimation);
     }
 
     public interface EventProgressBarCallback
