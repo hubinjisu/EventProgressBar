@@ -25,11 +25,11 @@ import java.util.ArrayList;
  */
 public class EventProgressBar extends LinearLayout
 {
-    /** 方法执行成功 */
+    /** success flag */
     public final static int METHOD_SUCCESS = 0;
-    /** 方法执行失败 */
+    /** fail flag */
     public final static int METHOD_FAILED = -1;
-
+    /** Interval for the every progress unit */
     private long progressIntervalTime = 10;
     private ArrayList<ProgressEvent> events;
     private Context mContext;
@@ -47,6 +47,10 @@ public class EventProgressBar extends LinearLayout
         initView(context);
     }
 
+    /**
+     * init the content view
+     * @param context
+     */
     private void initView(Context context)
     {
         events = new ArrayList<ProgressEvent>();
@@ -75,7 +79,7 @@ public class EventProgressBar extends LinearLayout
     }
 
     /**
-     * 添加进度事件
+     * add the progress event
      *
      * @param event
      * @return
@@ -90,7 +94,7 @@ public class EventProgressBar extends LinearLayout
     }
 
     /**
-     * 添加进度回调
+     * add the callback of the progress event
      *
      * @param callback
      * @return
@@ -102,7 +106,7 @@ public class EventProgressBar extends LinearLayout
     }
 
     /**
-     * 每单位进度运行时间，单位：ms
+     * Interval for the every progress unit in ms
      *
      * @param intervalTime
      * @return
@@ -131,7 +135,7 @@ public class EventProgressBar extends LinearLayout
     }
 
     /**
-     * 重新进行事件加载
+     * start the events task
      */
     public void startEventTask()
     {
@@ -146,12 +150,12 @@ public class EventProgressBar extends LinearLayout
     public interface EventProgressBarCallback
     {
         /**
-         * 加载前准备
+         * Handle something before starting the progress
          */
         void onProgressStarted();
 
         /**
-         * 加载完成
+         * Handle something after finishing the progress
          *
          * @param result
          */
