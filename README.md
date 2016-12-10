@@ -1,6 +1,5 @@
 # EventProgressBar
-EventProgressBar
-It is simple to use as the following.
+EventProgressBar is simple to use as the following steps.
 
             progressLayout.setProgressUnitTime(50).setCallback(new EventProgressBar.EventProgressBarCallback()
             {
