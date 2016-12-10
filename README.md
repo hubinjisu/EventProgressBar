@@ -1,7 +1,8 @@
 # EventProgressBar
 EventProgressBar
 It is simple to use as the following.
-progressLayout.setProgressUnitTime(50).setCallback(new EventProgressBar.EventProgressBarCallback()
+
+            progressLayout.setProgressUnitTime(50).setCallback(new EventProgressBar.EventProgressBarCallback()
             {
                 @Override
                 public void onProgressStarted()
